@@ -67,7 +67,7 @@
   // Blöcke, die weich einblenden
   var sel = [
     '.hero .kicker', '.hero .lines li', '.hero .actions',
-    '.page-hero p', '.factors .lead', '.constellation', '.constellation .chip',
+    '.page-hero p', '.factors .lead', '.constellation',
     '.split .media', '.split .body > p', '.split .body > .btn',
     '.offers-intro > p', '.card', '.detail .media', '.detail .body > :not(h2)',
     '.price', '.price-note', '.placeholder', '.way', '.form', '.map', '.location .info > :not(h2)',
