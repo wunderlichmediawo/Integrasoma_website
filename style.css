@@ -501,3 +501,13 @@ section { padding-block: clamp(72px, 10vw, 124px); }
 .constellation .core::after { background: rgba(182,135,91,.08); animation: ringPulse2 3.6s ease-in-out infinite; }
 @keyframes ringPulse { 0%, 100% { transform: scale(2.0); } 50% { transform: scale(2.7); } }
 @keyframes ringPulse2 { 0%, 100% { transform: scale(3.2); } 50% { transform: scale(4.4); } }
+
+/* ---------- Linien robust für alle Browser (Safari & Co.): kreisförmig vom Punkt nach außen aufdecken ---------- */
+.constellation line { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; transition: none !important; }
+.constellation svg { clip-path: circle(0% at 48.5% 50%); -webkit-clip-path: circle(0% at 48.5% 50%); transition: clip-path 1.6s cubic-bezier(.65,0,.25,1) .15s, -webkit-clip-path 1.6s cubic-bezier(.65,0,.25,1) .15s; }
+.constellation.is-in svg, .constellation:not([data-r]) svg, html:not(.anim) .constellation svg { clip-path: circle(100% at 48.5% 50%); -webkit-clip-path: circle(100% at 48.5% 50%); }
+
+/* ---------- Linien per JavaScript (funktioniert in Safari, Chrome, Firefox gleich) ---------- */
+.constellation svg, .constellation.is-in svg, .constellation:not([data-r]) svg, html:not(.anim) .constellation svg { clip-path: none !important; -webkit-clip-path: none !important; transition: none !important; }
+.constellation .chip { transition: opacity .8s ease; }
+.anim .constellation[data-r]:not(.is-in) .chip { scale: 1; }

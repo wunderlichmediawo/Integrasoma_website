@@ -89,8 +89,29 @@
     // danach eigene Hover-Übergänge wieder freigeben
     setTimeout(function () { el.removeAttribute('data-r'); el.classList.remove('is-in'); }, 2200);
   }
+  // Verbindungslinien: wachsen per JavaScript vom roten Punkt nach außen (browserunabhängig, auch Safari)
+  function prepLines(c) {
+    var svg = c.querySelector('svg'); if (!svg) return;
+    c._lines = Array.prototype.map.call(svg.querySelectorAll('line'), function (l) {
+      var d = { el: l, x1: +l.getAttribute('x1'), y1: +l.getAttribute('y1'), cx: +l.getAttribute('x2'), cy: +l.getAttribute('y2') };
+      l.setAttribute('x1', d.cx); l.setAttribute('y1', d.cy); return d;
+    });
+  }
+  function growLines(c) {
+    var ls = c._lines; if (!ls) return;
+    var t0 = null, dur = 1600, delay = 150;
+    function ease(x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+    function step(ts) {
+      if (t0 === null) t0 = ts;
+      var k = Math.max(0, Math.min(1, (ts - t0 - delay) / dur)), e = ease(k);
+      ls.forEach(function (d) { d.el.setAttribute('x1', d.cx + (d.x1 - d.cx) * e); d.el.setAttribute('y1', d.cy + (d.y1 - d.cy) * e); });
+      if (k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  document.querySelectorAll('.constellation').forEach(prepLines);
   var ioLines = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); ioLines.unobserve(e.target); setTimeout(function () { e.target.removeAttribute('data-r'); e.target.classList.remove('is-in'); }, 3600); } });
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); growLines(e.target); ioLines.unobserve(e.target); setTimeout(function () { e.target.removeAttribute('data-r'); e.target.classList.remove('is-in'); }, 3600); } });
   }, { threshold: 0.45 });
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
